@@ -1,8 +1,8 @@
 const fileCache = require('think-cache-file');
 const {Console, File, DateFile} = require('think-logger3');
 const path = require('path');
-const database = require('./database.js');
-
+//const database = require('./database.js');
+const sqlite = require('think-model-sqlite');
 const isDev = think.env === 'development';
 
 /**
@@ -26,14 +26,25 @@ exports.cache = {
  * model adapter config
  * @type {Object}
  */
+// exports.model = {
+//   type: 'mysql',
+//   common: {
+//     logConnect: isDev,
+//     logSql: isDev,
+//     logger: msg => think.logger.info(msg)
+//   },
+//   mysql: database
+// };
+
 exports.model = {
-  type: 'mysql',
-  common: {
-    logConnect: isDev,
-    logSql: isDev,
-    logger: msg => think.logger.info(msg)
-  },
-  mysql: database
+  type: 'sqlite',
+  sqlite: {
+    handle: sqlite, // Adapter handle
+    path: path.join(think.ROOT_PATH, 'runtime/sqlite/demo'), // sqlite 保存的目录
+    database: 'nideshop', // 数据库名
+    connectionLimit: 1, // 连接池的连接个数，默认为 1
+    prefix: 'nideshop_', // 数据表前缀，如果一个数据库里有多个项目，那项目之间的数据表可以通过前缀来区分
+  }
 };
 
 /**
